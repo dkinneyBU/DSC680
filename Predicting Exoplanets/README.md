@@ -15,9 +15,9 @@ The dataset I am leveraging is the **Kepler Object of Interest (KOI)** table, lo
 ### Navigation - explain how to look at each of the files in the repository
 
 **References**  
-[1] [NASA Exoplanet Archive – NASA Exoplanet Science Institute](https://exoplanetarchive.ipac.caltech.edu/index.html)
-[2] [What Is an Exoplanet? | NASA Space Place – NASA Science for Kids](https://spaceplace.nasa.gov/all-about-exoplanets/en/)
-[3] [Overview | What is an Exoplanet? – Exoplanet Exploration: Planets Beyond our Solar System[(https://exoplanets.nasa.gov/what-is-an-exoplanet/overview/)
+[1] [NASA Exoplanet Archive – NASA Exoplanet Science Institute](https://exoplanetarchive.ipac.caltech.edu/index.html)  
+[2] [What Is an Exoplanet? | NASA Space Place – NASA Science for Kids](https://spaceplace.nasa.gov/all-about-exoplanets/en/)  
+[3] [Overview | What is an Exoplanet? – Exoplanet Exploration: Planets Beyond our Solar System](https://exoplanets.nasa.gov/what-is-an-exoplanet/overview/)  
 
 
 
