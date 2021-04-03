@@ -4,8 +4,7 @@ Created on Fri Apr  2 15:45:10 2021
 
 @author: David
 """
-# %% Imports
-# Import libraries
+# %% Import libraries
 from datetime import datetime
 
 import matplotlib.pyplot as plt
@@ -21,15 +20,15 @@ from sklearn.model_selection import train_test_split, \
                                     cross_val_predict
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
+from sklearn.metrics import confusion_matrix, \
+                                    accuracy_score, \
+                                    precision_score, \
+                                    recall_score
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
-# %% PCA function
+# %% function definitions
 def pca(df):
     
     # standardize the features matrix
@@ -41,6 +40,21 @@ def pca(df):
     
     return features, features_pca
 
+
+def plot_cm(cm):
+    # plot confusion matrix
+    fig, ax = plt.subplots(figsize = (10,8))
+    
+    sns.heatmap(conf_matrix_rf/np.sum(conf_matrix_rf), annot=True, 
+                fmt='.2%', cmap='Blues', annot_kws={'size':15})
+    
+    ax.set_title('Random Forest Confusion Matrix', fontsize = 18, loc='left')
+    
+    ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 12)
+    ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 12)
+    
+    plt.show()
+    
 # %% read dataset
 # Read the Kepler Objects of Interest (KOI) dataset and look at one observation
 df_koi = pd.read_csv('../DSC680/Predicting Exoplanets/data/cumulative_2021.03.16_17.10.21.csv')
@@ -100,31 +114,39 @@ pfile = "profile_report_{}.html".format(datetime.now().strftime('%m%d%y%H%M'))
 profile.to_file(pfile)
 # %% prepare data
 """
-The 3 categorical variables did not display much variation. In fact, koi_limbdark_mod 
-was a constant value while koi_fittype and koi_parm_prov had a constant value in 
-roughly 80% of the observations.
+Remove all descriptive variables to further simplify the dataset
+In the interest of time, remove all categorical variables
 """
-cat_cols = ['koi_limbdark_mod', 'koi_fittype', 'koi_parm_prov']
-df_final = df_koi_cleaned.drop(cat_cols, axis=1)
+remove_cols = ['rowid', 'kepid', 'kepoi_name', 'kepler_name', 'koi_vet_stat',
+               'koi_vet_date', 'koi_pdisposition', 'koi_fpflag_nt',
+               'koi_fpflag_ss', 'koi_fpflag_co', 'koi_fpflag_ec', 'koi_disp_prov',
+               'koi_comment', 'koi_limbdark_mod', 'koi_parm_prov', 'koi_tce_delivname',
+               'koi_trans_mod', 'koi_trans_mod', 'koi_datalink_dvr', 'koi_datalink_dvs',
+               'koi_sparprov', 'koi_fittype']
+df_final = df_koi_cleaned.drop(remove_cols, axis=1)
+
+# Separate labels from features
+labels = df_final['koi_disposition']
+df_features = df_final.drop(['koi_disposition'], axis=1)
 
 # Replace missing numerical values with the median
 imputer = SimpleImputer(strategy="median")
-imputer.fit(df_final)
-X = imputer.transform(df_final)
-df_final = pd.DataFrame(X, columns=df_final.columns, index=df_final.index)
+imputer.fit(df_features)
+X = imputer.transform(df_features)
+df_final = pd.DataFrame(X, columns=df_features.columns, index=df_features.index)
 
 # %% Dimensionality Reduction
 features, features_pca = pca(df_final)
 print('Original number of features: {}'.format(features.shape[1]))
 print('Reduced number of features: {}'.format(features_pca.shape[1]))
 
-df_final = pd.DataFrame(featu, columns=df_final.columns, index=df_final.index)
+df_final = pd.DataFrame(df_final, columns=df_final.columns, index=df_final.index)
 
 # %% train and test sets
-labels = np.array(df_koi_cleaned['koi_disposition'])
+# labels = np.array(labels)
 
 train_features, test_features, train_labels, test_labels = train_test_split(
-    features_pca, labels, test_size = 0.25, random_state = 42)
+    df_final, labels, test_size = 0.25, random_state = 42)
 
 print('Training Features Shape:', train_features.shape)
 print('Training Labels Shape:', train_labels.shape)
@@ -133,40 +155,24 @@ print('Testing Labels Shape:', test_labels.shape)
 print('Training distribution: ',train_labels.value_counts(normalize=True))
 print('Test distribution: ',test_labels.value_counts(normalize=True))
 
-# %% baseline
-rf_baseline = RandomForestClassifier(random_state = 42)
-rf_baseline.fit(train_features, train_labels)
-print(rf_baseline.score(train_features, train_labels))
-
-# %% train model
+# %% train baseline model
 # Instantiate model with 1000 decision trees
 rf = RandomForestClassifier(n_estimators = 1000, random_state = 42)
 rf.fit(train_features, train_labels)
-print(train_features, train_labels)
 
 predictions = rf.predict(test_features)
-print(accuracy_score(test_labels, predictions))
-print(recall_score(test_labels, predictions, average=None))
+print("Accuracy score: ", accuracy_score(test_labels, predictions))
+print("Recall score: ", recall_score(test_labels, predictions, average=None))
 
-# %% performance
-print(cross_val_score(rf, train_features, train_labels, cv=3, scoring='accuracy'))
+cv_score = cross_val_score(rf, train_features, train_labels, cv=3, scoring='accuracy')
+print("Cross validation score: ", cv_score)
 
 # %% confusion matrix
 train_pred = cross_val_predict(rf, train_features,train_labels, cv=3)
 conf_matrix_rf = confusion_matrix(train_labels, train_pred)
+print(conf_matrix_rf)
 
-# %% plot confusion matrix
-fig, ax = plt.subplots(figsize = (10,8))
-
-sns.heatmap(conf_matrix_rf/np.sum(conf_matrix_rf), annot=True, 
-            fmt='.2%', cmap='Blues', annot_kws={'size':15})
-
-ax.set_title('Random Forest Confusion Matrix', fontsize = 18, loc='left')
-
-ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 12)
-ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 12)
-
-plt.show()
+plot_cm(conf_matrix_rf)
 
 # %% randomized search
 # Number of trees in random forest
@@ -214,51 +220,36 @@ rf_random.fit(train_features, train_labels)
 
 # %% best params
 # use these params for the next model
-rf_random.best_params_
-
+print(rf_random.best_params_)
 
 # %% Model with Random Search CV Params
-rf_rs = RandomForestClassifier(n_estimators = 1577,
-                               min_samples_split = 10,
-                               min_samples_leaf = 1,
+rf_rs = RandomForestClassifier(n_estimators = 522,
+                               min_samples_split = 2,
+                               min_samples_leaf = 2,
                                max_features = 'sqrt',
-                               max_depth = 20,
-                               bootstrap = True)
+                               max_depth = 110,
+                               bootstrap = False)
 
 rf_rs.fit(train_features, train_labels)
 
 print(rf_rs.score(train_features, train_labels))
 y_pred = rf_rs.predict(test_features)
-accuracy_score(test_labels, y_pred)
+print(accuracy_score(test_labels, y_pred))
 
 # %% confusion matrix & accuracy
-conf_matrix_rf = pd.DataFrame(confusion_matrix(test_labels, y_pred, 
-                                               labels=['High','Med','Low']), 
-                              index = ['actual high', 'actual med', 'actual low'], 
-                              columns = ['predicted high', 'predicted med', 'predicted low'])
+rs_pred = cross_val_predict(rf_rs, train_features,train_labels, cv=3)
+conf_matrix_rf = confusion_matrix(train_labels, rs_pred)
+print(conf_matrix_rf)
 
-conf_matrix_rf
+plot_cm(conf_matrix_rf)
 
 # %%
 # accuracy score
-accuracy_score(test_labels, y_pred)
+print("Accuracy score: ", accuracy_score(test_labels, rs_pred))
 
 # recall
-recall_score(test_labels, y_pred, average=None)
+print("Recall score: ", recall_score(test_labels, rs_pred, average=None))
 
 # precision score
-precision_score(test_labels, y_pred, average=None)
-
-fig, ax = plt.subplots(figsize = (10,8))
-
-
-sns.heatmap(conf_matrix_rf/np.sum(conf_matrix_rf), annot=True, 
-            fmt='.2%', cmap='Blues', annot_kws={'size':15})
-
-ax.set_title('Random Forest Confusion Matrix', fontsize = 18, loc='left')
-
-ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 12)
-ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 12)
-
-plt.show()
+print("Precision score: ", precision_score(test_labels, rs_pred, average=None))
 
