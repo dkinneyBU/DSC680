@@ -8,6 +8,7 @@ Created on Fri Apr  2 15:45:10 2021
 from datetime import datetime
 
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -23,7 +24,9 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import confusion_matrix, \
                                     accuracy_score, \
                                     precision_score, \
-                                    recall_score
+                                    recall_score, \
+                                    classification_report
+from tpot import TPOTClassifier
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
@@ -55,8 +58,8 @@ def plot_cm(cm):
     
     plt.show()
     
-# %% read dataset
-# Read the Kepler Objects of Interest (KOI) dataset and look at one observation
+# %% read df_final
+# Read the Kepler Objects of Interest (KOI) df_final and look at one observation
 df_koi = pd.read_csv('../DSC680/Predicting Exoplanets/data/cumulative_2021.03.16_17.10.21.csv')
 print(df_koi.shape)
 print(df_koi[1:2].T)
@@ -114,7 +117,7 @@ pfile = "profile_report_{}.html".format(datetime.now().strftime('%m%d%y%H%M'))
 profile.to_file(pfile)
 # %% prepare data
 """
-Remove all descriptive variables to further simplify the dataset
+Remove all descriptive variables to further simplify the df_final
 In the interest of time, remove all categorical variables
 """
 remove_cols = ['rowid', 'kepid', 'kepoi_name', 'kepler_name', 'koi_vet_stat',
@@ -144,9 +147,9 @@ df_final = pd.DataFrame(df_final, columns=df_final.columns, index=df_final.index
 
 # %% correlation matrix
 rcParams['figure.figsize'] = 20, 14
-plt.matshow(dataset.corr())
-plt.yticks(np.arange(dataset.shape[1]), dataset.columns)
-plt.xticks(np.arange(dataset.shape[1]), dataset.columns)
+plt.matshow(df_final.corr())
+plt.yticks(np.arange(df_final.shape[1]), df_final.columns)
+plt.xticks(np.arange(df_final.shape[1]), df_final.columns)
 plt.colorbar()
 
 # %% train and test sets
@@ -174,7 +177,7 @@ print("Recall score: ", recall_score(test_labels, predictions, average=None))
 cv_score = cross_val_score(rf, train_features, train_labels, cv=3, scoring='accuracy')
 print("Cross validation score: ", cv_score)
 
-print(classification_report(y_test,prediction))
+print(classification_report(test_labels,predictions))
 
 # %% confusion matrix
 train_pred = cross_val_predict(rf, train_features,train_labels, cv=3)
@@ -245,7 +248,7 @@ print(rf_rs.score(train_features, train_labels))
 y_pred = rf_rs.predict(test_features)
 print(accuracy_score(test_labels, y_pred))
 
-print(classification_report(y_test,prediction))
+print(classification_report(test_labels, y_pred))
 
 # %% confusion matrix & accuracy
 rs_pred = cross_val_predict(rf_rs, train_features,train_labels, cv=3)
@@ -265,13 +268,32 @@ print("Recall score: ", recall_score(test_labels, rs_pred, average=None))
 print("Precision score: ", precision_score(test_labels, rs_pred, average=None))
 
 # %% TPOT
-from tpot import TPOTClassifier
+# Number of trees in random forest
+n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
+# Number of features to consider at every split
+max_features = ['auto', 'sqrt','log2']
+# Maximum number of levels in tree
+max_depth = [int(x) for x in np.linspace(10, 1000,10)]
+# Minimum number of samples required to split a node
+min_samples_split = [2, 5, 10,14]
+# Minimum number of samples required at each leaf node
+min_samples_leaf = [1, 2, 4,6,8]
+# Create the random grid
+param = {'n_estimators': n_estimators,
+               'max_features': max_features,
+               'max_depth': max_depth,
+               'min_samples_split': min_samples_split,
+               'min_samples_leaf': min_samples_leaf,
+              'criterion':['entropy','gini']}
 
-tpot_classifier = TPOTClassifier(generations= 5, population_size= 24, offspring_size= 12,
-                                 verbosity= 2, early_stop= 12,
+tpot_classifier = TPOTClassifier(generations= 5, 
+                                 population_size= 24, 
+                                 offspring_size= 12,
+                                 verbosity= 2, 
+                                 early_stop= 12,
                                  config_dict={'sklearn.ensemble.RandomForestClassifier': param}, 
-                                 cv = 4, scoring = 'accuracy')
-tpot_classifier.fit(X_train,y_train)
-
-accuracy = tpot_classifier.score(X_test, y_test)
+                                 cv = 4, 
+                                 scoring = 'accuracy')
+tpot_classifier.fit(train_features, train_labels)
+accuracy = tpot_classifier.score(test_features, test_labels)
 print(accuracy)
