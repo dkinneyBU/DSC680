@@ -142,6 +142,13 @@ print('Reduced number of features: {}'.format(features_pca.shape[1]))
 
 df_final = pd.DataFrame(df_final, columns=df_final.columns, index=df_final.index)
 
+# %% correlation matrix
+rcParams['figure.figsize'] = 20, 14
+plt.matshow(dataset.corr())
+plt.yticks(np.arange(dataset.shape[1]), dataset.columns)
+plt.xticks(np.arange(dataset.shape[1]), dataset.columns)
+plt.colorbar()
+
 # %% train and test sets
 # labels = np.array(labels)
 
@@ -166,6 +173,8 @@ print("Recall score: ", recall_score(test_labels, predictions, average=None))
 
 cv_score = cross_val_score(rf, train_features, train_labels, cv=3, scoring='accuracy')
 print("Cross validation score: ", cv_score)
+
+print(classification_report(y_test,prediction))
 
 # %% confusion matrix
 train_pred = cross_val_predict(rf, train_features,train_labels, cv=3)
@@ -236,6 +245,8 @@ print(rf_rs.score(train_features, train_labels))
 y_pred = rf_rs.predict(test_features)
 print(accuracy_score(test_labels, y_pred))
 
+print(classification_report(y_test,prediction))
+
 # %% confusion matrix & accuracy
 rs_pred = cross_val_predict(rf_rs, train_features,train_labels, cv=3)
 conf_matrix_rf = confusion_matrix(train_labels, rs_pred)
@@ -253,3 +264,14 @@ print("Recall score: ", recall_score(test_labels, rs_pred, average=None))
 # precision score
 print("Precision score: ", precision_score(test_labels, rs_pred, average=None))
 
+# %% TPOT
+from tpot import TPOTClassifier
+
+tpot_classifier = TPOTClassifier(generations= 5, population_size= 24, offspring_size= 12,
+                                 verbosity= 2, early_stop= 12,
+                                 config_dict={'sklearn.ensemble.RandomForestClassifier': param}, 
+                                 cv = 4, scoring = 'accuracy')
+tpot_classifier.fit(X_train,y_train)
+
+accuracy = tpot_classifier.score(X_test, y_test)
+print(accuracy)
