@@ -1,0 +1,64 @@
+Identification
+	Id and name
+
+Archive
+	name
+	disposition (confirmed, candidate, false positive - labels)
+	vetting status, last updated
+
+Disposition - would've influenced/biased the model
+	score, flags, comments
+
+Transit properties
+	period, ecentricity of orbit, transit duration
+
+Threshold-crossing event information
+	Comes from the transiting planet search model of the Kepler data pipeline
+	analysis of light curves
+
+Stellar parameters
+	effective temperature, surface gravity, radius, mass and age.
+
+Pixel-based
+	Planetary transit false positives are commonly caused by light curve contamination from an eclipsing binary falling partially within the target aperture 
+
+Dataset size about 9500 observations
+
+
+1 - Regarding the decision to exclude the 8 categorical variables, can you elaborate on what they represented?
+2 - In retrospect, would any of them add any value to the model’s accuracy?
+'koi_parm_prov', 
+'koi_tce_delivname', descriptive delivery method
+'koi_trans_mod', a reference to the transit model used
+'koi_datalink_dvr', the next two are relative url path names
+'koi_datalink_dvs',
+'koi_sparprov', 
+'koi_fittype' least squares, markov chain (90% Least Squares Fit with Markov Monte Carlo error bars))
+
+some were virtually constant values
+
+3 - Why did you decide to employ a standard scaler, as opposed to say, a min/max scaler?
+
+standardization does not bound the variables to a specific range, and some of the variables had a pretty wide range. As one example the min for koi_period was .24, and the maximum value was 129995. I did look at these extreme values and decided they were valid for predicting false positives so did not want to exclude them. Standardization is much less affected by outliers.
+
+4 - In your initial proposal, you were going to train the model on subsets based on the 6 categories. What changed your mind?
+5 - Do you feel this is still something worth pursuing?
+
+Time. I simply ran out of time because I kinda went off in the weeds on testing other models. This is definitely something I'll revisit. If one of the subsets is substantially better, it would certainly make the process easier as not as much data needs to be recorded.
+
+6 - Why did you decide to employ a Random Forest Classifier?
+
+7 - Are there any other models you feel may give you better results?
+I trained a SVM, AdaBoost, XGBoost, I employed TPOT (open-source library for performing AutoML. None gave better results.
+
+8 - What other methods might you employ to improve the accuracy of your model?
+Neural network
+
+9 - You state in your paper that a randomized grid search did not result in model improvement. 
+Had you considered applying a genetic algorithm to perform hyperparameter tuning?
+
+TPOT - t makes use of the popular Scikit-Learn machine learning library for data transforms and machine learning algorithms and uses a Genetic Programming stochastic global search procedure to efficiently discover a top-performing model pipeline for a given dataset.
+
+
+
+
