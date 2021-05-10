@@ -1,0 +1,4 @@
+artifact_location: file:///D:/GitHub/DSC680/Predicting%20Exoplanets/src/mlruns/1
+experiment_id: '1'
+lifecycle_stage: active
+name: exoplanets

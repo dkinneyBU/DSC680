@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/GitHub/DSC680/Predicting%20Exoplanets/src/mlruns/1/162730b02e084e7793a3159c8b9bdc6f/artifacts
+end_time: 1619029488249
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: 162730b02e084e7793a3159c8b9bdc6f
+run_uuid: 162730b02e084e7793a3159c8b9bdc6f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1619029487953
+status: 3
+tags: []
+user_id: David

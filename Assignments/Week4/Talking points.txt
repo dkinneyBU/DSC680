@@ -47,6 +47,7 @@ standardization does not bound the variables to a specific range, and some of th
 Time. I simply ran out of time because I kinda went off in the weeds on testing other models. This is definitely something I'll revisit. If one of the subsets is substantially better, it would certainly make the process easier as not as much data needs to be recorded.
 
 6 - Why did you decide to employ a Random Forest Classifier?
+multi class
 
 7 - Are there any other models you feel may give you better results?
 I trained a SVM, AdaBoost, XGBoost, I employed TPOT (open-source library for performing AutoML. None gave better results.
