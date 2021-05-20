@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/GitHub/DSC680/Breast%20Cancer/mlruns/1/94c0af3b28654b8c89dae37bc56c2345/artifacts
+end_time: 1621263418546
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: 94c0af3b28654b8c89dae37bc56c2345
+run_uuid: 94c0af3b28654b8c89dae37bc56c2345
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1621263418138
+status: 3
+tags: []
+user_id: David

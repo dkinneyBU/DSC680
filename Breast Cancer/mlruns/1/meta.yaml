@@ -1,0 +1,4 @@
+artifact_location: file:///D:/GitHub/DSC680/Breast%20Cancer/mlruns/1
+experiment_id: '1'
+lifecycle_stage: active
+name: BCpred
