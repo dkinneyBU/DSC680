@@ -1,6 +1,77 @@
+Slide 1
+Talk about why you chose this topic (data, research information...)
+
+Slide 2
+Wouldn't say the C word when I was young
+Statistics were sobering
+
+Slide 3
+False negatives
+
+Slide 4
+getting introduced to pycaret - the whole class talked about it
+touch on your approach
+
+Slide 5
+brief overview of the dataset (569 observations, taken from kaggle)
+
+Slide 6
+In 42 seconds trains and compares 15 different classification algorithms and ranks them. 
+creating and tuning takes less than a minute.
+Numberous plots to evaluate model
+predictions
+
+Slide 7 
+results were impressive
+Accuracy 96%
+AUC .99
+Recall .94
+Precision .94
+F1 .94
+
+Slide 8
+Prediction
+talk about fast ai (lacking doc, but good tutorials and book)
+For non-math nerds
+Wrapper for PyTorch
+
+Slide 9
+images dataset
+
+Slide 10
+talk about overfitting and the loss curve trend diverging after 3epochs
+training time of roughly 3 hours
+
+Slide 10
+speak about what the slide visually means to you
+
+Slide 11
+Going to spend a little time on this slide, because it's important to understand these measurements
+
+Sensitivity or True Positive Rate is where the model classifies a patient has the disease given the patient actually does have the disease. Sensitivity quantifies the avoidance of false negatives
+Example: A new test was tested on 10,000 patients, if the new test has a sensitivity of 90% the test will correctly detect 9,000 (True Positive) patients but will miss 1000 (False Negative) patients that have the condition but were tested as not having the condition
+
+Specificity or True Negative Rate is where the model classifies a patient as not having the disease given the patient actually does not have the disease. Specificity quantifies the avoidance of false positives
+
+PPV and NPV
+Most medical testing is evaluated via PPV (Positive Predictive Value) or NPV (Negative Predictive Value).
+
+PPV - if the model predicts a patient has a condition what is the probability that the patient actually has the condition
+
+NPV - if the model predicts a patient does not have a condition what is the probability that the patient actually does not have the condition
+
+The ideal value of the PPV, with a perfect test, is 1 (100%), and the worst possible value would be zero
+The ideal value of the NPV, with a perfect test, is 1 (100%), and the worst possible value would be zero
+
+Slide 15
 FocalNet an AI-based system developed by Kyung Hyun Sung, a radiologist at the University of California to better classify prostate cancer.
 
 Google researchers developed an AI model to try and predict whether someone ends up with lung cancer a year from when they got screened. the AI outperformed all of the six radiologists who also examined the CT scans to assess risk of lung cancer. The AI reduced the number of false positives by 11% and false negative by 5%.
+
+Slide 16
+The rock star
+Developing an AI model that based on an observation today can predict a cancer will form out to 4 years.
+
 
 
 
