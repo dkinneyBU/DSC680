@@ -1,0 +1,7 @@
+FocalNet an AI-based system developed by Kyung Hyun Sung, a radiologist at the University of California to better classify prostate cancer.
+
+Google researchers developed an AI model to try and predict whether someone ends up with lung cancer a year from when they got screened. the AI outperformed all of the six radiologists who also examined the CT scans to assess risk of lung cancer. The AI reduced the number of false positives by 11% and false negative by 5%.
+
+
+
+
