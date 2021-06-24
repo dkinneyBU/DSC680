@@ -3,7 +3,6 @@ layout: post
 title:  "Breast Cancer Prediction and Detection"
 author: David Kinney
 categories: [ projects, learning ]
-image: ../images/Image-2.png
 description: "Something about this post here"
 ---
 ## Leveraging Machine Learning for Detection and Deep Learning for Prediction
